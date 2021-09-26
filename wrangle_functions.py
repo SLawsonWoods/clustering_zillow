@@ -8,7 +8,6 @@ from scipy import stats
 import sklearn.preprocessing
 from sklearn.model_selection import train_test_split
 np.random.seed(123)
-
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
@@ -30,7 +29,7 @@ FROM   properties_2017 prop
 
                    GROUP  BY parcelid) pred
                USING (parcelid)
-               			JOIN predictions_2017 as pred USING (parcelid, transactiondate)
+       JOIN predictions_2017 as pred USING (parcelid, transactiondate)
        LEFT JOIN airconditioningtype air USING (airconditioningtypeid)
        LEFT JOIN architecturalstyletype arch USING (architecturalstyletypeid)
        LEFT JOIN buildingclasstype build USING (buildingclasstypeid)
@@ -71,11 +70,12 @@ def remove_columns(df, cols_to_remove):
     return df
 
 def wrangle_zillow():
-    if os.path.isfile('zillow_cached.csv') == False:
-        df = get_zillow(sql)
-        df.to_csv('zillow_cached.csv',index = False)
-    else:
-        df = pd.read_csv('zillow_cached.csv')
+# not sure if i need these since we don't need a csv in our deliverables
+#     if os.path.isfile('zillow_cached.csv') == False:
+#         df = get_zillow(sql)
+#         df.to_csv('zillow_cached.csv',index = False)
+#     else:
+#         df = pd.read_csv('zillow_cached.csv')
 
     # Restrict df to only properties that meet single use criteria
     single_use = [261, 262, 263, 264, 266, 268, 273, 276, 279]
@@ -108,15 +108,8 @@ def wrangle_zillow():
 
     df = remove_columns(df, dropcols)
 
-    # replace nulls in unitcnt with 1
-    df.unitcnt.fillna(1, inplace = True)
-
-    # assume that since this is Southern CA, null means 'None' for heating system
-    df.heatingorsystemdesc.fillna('None', inplace = True)
-
     # replace nulls with median values for select columns
     df.lotsizesquarefeet.fillna(7313, inplace = True)
-    df.buildingqualitytypeid.fillna(6.0, inplace = True)
 
     # Columns to look for outliers
     df = df[df.taxvaluedollarcnt < 5_000_000]
@@ -127,12 +120,15 @@ def wrangle_zillow():
 
     return df
 
-def min_max_scaler(train, valid, test):
+def min_max_scaler(train_input, valid_input, test_input):
     '''
     Uses the train & test datasets created by the split_my_data function
     Returns 3 items: mm_scaler, train_scaled_mm, test_scaled_mm
     This is a linear transformation. Values will lie between 0 and 1
     '''
+    train = train_input.copy()
+    valid = valid_input.copy()
+    test = test_input.copy()
     num_vars = list(train.select_dtypes('number').columns)
     scaler = MinMaxScaler()
     train[num_vars] = scaler.fit_transform(train[num_vars])
@@ -175,9 +171,9 @@ def wrangle_mall_df():
     # handle outliers
     mall_df = outlier_function(mall_df, ['age', 'spending_score', 'annual_income'], 1.5)
 
-    # get dummy for gender column
-    dummy_df = pd.get_dummies(mall_df.gender, drop_first=True)
-    mall_df = pd.concat([mall_df, dummy_df], axis=1).drop(columns = ['gender'])
+#     # get dummy for gender column
+#     dummy_df = pd.get_dummies(mall_df.gender, drop_first=True)
+#     mall_df = pd.concat([mall_df, dummy_df], axis=1).drop(columns = ['gender'])
 
     train, validate, test = train_validate_test_split(mall_df)
 
@@ -198,60 +194,4 @@ def nulls_by_row(df):
     .groupby(['num_cols_missing', 'percent_cols_missing']).count()\
     .rename(index=str, columns={'customer_id': 'num_rows'}).reset_index()
     return rows_missing
-
-def summarize(df):
-    '''
-    summarize will take in a single argument (a pandas dataframe)
-    and output to console various statistics on said dataframe, including:
-    # .head()
-    # .info()
-    # .describe()
-    # value_counts()
-    # observation of nulls in the dataframe
-    '''
-    print('=====================================================\n\n')
-    print('Dataframe head: ')
-    print(df.head(3).to_markdown())
-    print('=====================================================\n\n')
-    print('Dataframe info: ')
-    print(df.info())
-    print('=====================================================\n\n')
-    print('Dataframe Description: ')
-    print(df.describe().to_markdown())
-    num_cols = [col for col in df.columns if df[col].dtype != 'O']
-    cat_cols = [col for col in df.columns if col not in num_cols]
-    print('=====================================================')
-    print('DataFrame value counts: ')
-    for col in df.columns:
-        if col in cat_cols:
-            print(df[col].value_counts())
-        else:
-            print(df[col].value_counts(bins=10, sort=False))
-    print('=====================================================')
-    print('nulls in dataframe by column: ')
-    print(nulls_by_col(df))
-    print('=====================================================')
-    print('nulls in dataframe by row: ')
-    print(nulls_by_row(df))
-    print('============================================')
-
-
-
-
-
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
