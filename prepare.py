@@ -11,6 +11,14 @@ import env
 import wrangle_functions
 np.random.seed(123)
 
+def prep_function(df):
+    df = prep_work1(df)
+    df = drop_cols_null(df)
+    df = prep_work2(df)
+    # create a df with no outliers 
+    df_no_outs =outlier_function(df,df.columns, 1.5)
+    return df_no_outs, df
+
 def prep_work1(df):
     """ This function, drops nulls, renames the columns to something more clear to understand, corrects datatypes, get's rid of 
     unneeded decimals, reassigns proper dataypes, and drops duplicates."""
@@ -22,6 +30,7 @@ def prep_work1(df):
     df = df[(df.bedroomcnt > 0) & (df.bedroomcnt <= 10)]
     df = df[(df.bathroomcnt > 0) & (df.bathroomcnt <= 10)]
     # dropping columns with more than 25% missing values
+    return df
     
 def drop_cols_null(df, max_missing_rows_pct=0.25):
     '''
@@ -68,31 +77,21 @@ def prep_work2(df):
     return df
     
     
-    # now I want to make a df with no outliers in any column for 
-    # comparison in exploration
-def outlier_function(df,cols, k):
+def outlier_function(df, cols, k):
+    cols = ['bathrooms', 'bedrooms',
+       'area','lot_area','tax_value',
+       'taxamount']
     #function to detect and handle oulier using IQR rule
-    df_out = pd.DataFrame()
-    for col in cols:
+    for col in df[cols]:
         q1 = df[col].quantile(0.25)
         q3 = df[col].quantile(0.75)
         iqr = q3 - q1
         upper_bound =  q3 + k * iqr
         lower_bound =  q1 - k * iqr
-        new_data = df[(df[col] > upper_bound) | (df[col] < lower_bound)]
-        missing_index = new_data.index.difference(df_out.index)
-        df_out = df_out.append(new_data.loc[missing_index, : ])
-    return df_out
-    #defining the columns to remove outliers from
-    cols = ['bathrooms', 'bedrooms',
-       'area','lot_area','tax_value',
-       'taxamount']
-    k= .1
-    # create a df with no outliers 
-    df_no_outs =outlier_function(df,cols, k)
-
+        df = df[(df[col] < upper_bound) & (df[col] > lower_bound)]
+    return df
     
-    target ='logerror'
+    
 
 def train_validate_test(df, target):
     '''
