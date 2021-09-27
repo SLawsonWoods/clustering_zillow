@@ -11,7 +11,7 @@ import env
 import wrangle_functions
 np.random.seed(123)
 
-def prep_function(df):
+def prep_all_function(df):
     df = prep_work1(df)
     df = drop_cols_null(df)
     df = prep_work2(df)
