@@ -4,46 +4,95 @@ import seaborn as sns
 import os
 import matplotlib.pyplot as plt
 from scipy import stats
+import math
 import sklearn.preprocessing
 from sklearn.model_selection import train_test_split
 import env
+import wrangle_functions
 np.random.seed(123)
 
-def prep_work(df):
+def prep_work1(df):
     """ This function, drops nulls, renames the columns to something more clear to understand, corrects datatypes, get's rid of 
     unneeded decimals, reassigns proper dataypes, and drops duplicates."""
-    #dropping null values
-    df = df.dropna()
-    # now lets rename columns
-    df = df.rename(columns={
-                            'parcelid': 'parcel_id',
-                            'calculatedfinishedsquarefeet': 'sqft',
-                            'bathroomcnt': 'baths',
-                            'bedroomcnt': 'beds',
-                            'assessmentyear': 'assessment_year',
-                            'regionidcounty': 'county',
-                            'regionidzip': 'zipcode',
-                            'transactiondate': 'tranaction_date',
-                            'taxvaluedollarcnt':'tax_value'})
-    # change datatypes to int beds,tax_value 
-    df['beds'] = df['beds'].astype(int)
-    # calculate the tax rate and make a new column/feature 
-    df['tax_rate']= df['taxamount']/df['tax_value']
-    # let's get rid of the unnecessary decimal point
-    df['beds','sqft','tax_value','assessment_year','county','zipcode'] =          df['beds','sqft','tax_value','assessment_year','county','zipcode'].astype(str).apply(lambda x: x.replace('.0',''))
-    df['sqft'] = df['sqft'].astype(str).apply(lambda x: x.replace('.0',''))
-    df['tax_value'] = df['tax_value'].astype(str).apply(lambda x: x.replace('.0',''))
-    df['assessment_year'] = df['assessment_year'].astype(str).apply(lambda x: x.replace('.0',''))
-    df['county'] = df['county'].astype(str).apply(lambda x: x.replace('.0',''))
-    df['zipcode'] = df['zipcode'].astype(str).apply(lambda x: x.replace('.0',''))
-    # now lets convert these back to the correct datatype
-    df.parcel_id = df.parcel_id.astype(object)
-    df.beds = df.beds.astype(int)
-    df.taxamount = df.taxamount.astype(int)
-    df.sqft = df.sqft.astype(float, copy=False)
-    # dropping ALL duplicate values
-    df.drop_duplicates(subset ="parcel_id",keep = False, inplace = True)
+    # create list of single unit propertylandusedesc
+    single_prop_types = ['Single Family Residential', 'Condominium', 'Mobile Home',
+                     'Manufactured, Modular, Prefabricated Homes', 'Townhouse']
+    # filter for most-likely single unit properties
+    df = df[df.propertylandusedesc.isin(single_prop_types)]
+    df = df[(df.bedroomcnt > 0) & (df.bedroomcnt <= 10)]
+    df = df[(df.bathroomcnt > 0) & (df.bathroomcnt <= 10)]
+    # dropping columns with more than 25% missing values
+    
+def drop_cols_null(df, max_missing_rows_pct=0.25):
+    '''
+    Takes in a DataFrame and a maximum percent for missing values and
+    returns the passed DataFrame after removing any colums missing the
+    defined max percent or more worth of rows
+    '''
+    # set threshold for axis=1 and drop cols
+    thresh_col = math.ceil(df.shape[0] * (1 - max_missing_rows_pct))
+    df = df.dropna(axis=1, thresh=thresh_col)
     return df
+
+def prep_work2(df):
+    # make that a permanent part of the df
+    df = drop_cols_null(df)
+    #drop unneeded columns
+    df =df.drop(columns= ['propertylandusetypeid', 'id', 
+       'calculatedbathnbr','rawcensustractandblock',
+       'latitude', 'longitude',
+        'propertycountylandusecode','regionidcounty','finishedsquarefeet12',
+       'regionidzip', 'yearbuilt','id','censustractandblock','last_trans_date',
+       'transactiondate', 'id','roomcnt','fullbathcnt','assessmentyear'])
+    # here I am dropping the duplicate parcelid column
+    df = df.iloc[:,~df.columns.duplicated()]
+    #rename columns we might keep for better understanding
+    df = df.rename(columns={'bathroomcnt':'bathrooms','bedroomcnt': 'bedrooms','calculatedfinishedsquarefeet':
+         'area','fips':'zipcode','lotsizesquarefeet': 'lot_area','taxvaluedollarcnt':'tax_value'})
+    df = wrangle_functions.handle_missing_values(df)
+    # replace nulls with median values for lot_area
+    df.lot_area.fillna(7313, inplace = True)
+    # drop columns with nulls for yearbuilt, taxvalue and taxamount
+    df.dropna()
+    # correcting dtype
+    df.zipcode.astype(object)
+    # I looked up the the average home size is 2,300 sqft so I will make that the cutoff 
+    # between a large and small home
+    # here I want to divide the homes and insert into a column those that are more than 2,300 sqft
+    df['large_home'] =(df['area']> 2300).astype(int)
+    #drop propertylanusetypeid, parcelid, propertylandusedesc, landtaxvaluedollarcnt,structuretaxvaluedollarcnt
+    df.drop(columns = ['parcelid', 'propertylandusedesc', 'landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt'])
+    # Columns to look for extreme outliers, tax_value and area
+    df = df[df.tax_value < 5_000_000]
+    df = df[df.area < 8000]
+    return df
+    
+    
+    # now I want to make a df with no outliers in any column for 
+    # comparison in exploration
+def outlier_function(df,cols, k):
+    #function to detect and handle oulier using IQR rule
+    df_out = pd.DataFrame()
+    for col in cols:
+        q1 = df[col].quantile(0.25)
+        q3 = df[col].quantile(0.75)
+        iqr = q3 - q1
+        upper_bound =  q3 + k * iqr
+        lower_bound =  q1 - k * iqr
+        new_data = df[(df[col] > upper_bound) | (df[col] < lower_bound)]
+        missing_index = new_data.index.difference(df_out.index)
+        df_out = df_out.append(new_data.loc[missing_index, : ])
+    return df_out
+    #defining the columns to remove outliers from
+    cols = ['bathrooms', 'bedrooms',
+       'area','lot_area','tax_value',
+       'taxamount']
+    k= .1
+    # create a df with no outliers 
+    df_no_outs =outlier_function(df,cols, k)
+
+    
+    target ='logerror'
 
 def train_validate_test(df, target):
     '''
@@ -56,6 +105,7 @@ def train_validate_test(df, target):
     The function returns train, validate, test sets and also another 3 dataframes and 3 series:
     X_train (df) & y_train (series), X_validate & y_validate, X_test & y_test. 
     '''
+    target = 'logerror'
     # split df into test (20%) and train_validate (80%)
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
 
@@ -78,15 +128,6 @@ def train_validate_test(df, target):
     return train, validate, test, X_train, y_train, X_validate, y_validate, X_test, y_test
 
 
-# def remove_outlier(df):
-#     '''
-#     This function will remove values that are 3 standard deviations above or below the mean for sqft, baths, beds, and tax_value.         (Our MVP values)
-#     '''
-#     new_df = df[(np.abs(stats.zscore(df['sqft'])) < 3)]
-#     new_df = df[(np.abs(stats.zscore(df['baths'])) < 3)]
-#     new_df = df[(np.abs(stats.zscore(df['beds'])) < 3)]
-#     new_df = df[(np.abs(stats.zscore(df['tax_value'])) < 3)]
-#     return new_df
 
 
 
