@@ -12,7 +12,7 @@ ________________________________________________________________________________
 
 6.)  Project Context
 7.)  Data Dictionary
-8.)  Initial Hypothesis**
+8.)  Initial Hypothesis
 9.)  Executive Summary - Conclusions & Next Steps**
 
 
@@ -120,14 +120,24 @@ ________________________________________________________________________________
 _________________________________________________________________________________________________________
 **Initial Hypotheses**
 
-My initial ideas are that area of the home and acreage that the home sitsp
+My initial ideas were that area of the home and acreage that the home sits on would be important features to explore and model with if they proved to have a strong correlation with logerror.
 
 _________________________________________________________________________________________________________
 **Executive Summary - Conclusions & Next Steps**
 
-I found that all of the classification models I created, LogisticRegression, DecisionTree, RandomForest, and KNeighbors predicted the species of Iris equally well using the features sepal_width, sepal_length, petal_length, petal_width.
-I chose my DecisionTree model as my best model with a 90% accuracy rate for predicting my target value, species. This model outperformed my baseline score of 33% accuracy, so it has value.
-Some initial exploration and statistical testing revealed that engineering some new features like petal area or sepal area might help my models predict with even more accuracy, and with more time, I would like to test this hypothesis.
+Goals: The purpose of this project is create a regression model with using Kmeans clusters (if proven valuable) to predicts the logerror of Zillow homes in three counties of California (Los Angeles County, Orange County, and Ventrua County).
+
+Target: logerror which is the difference in the predicted zestimate and the actual home sale price
+
+Findings: I created clusters with a focus on lot_size and area of the home, according to my first cluster the r-value is .0015
+and the p-value is very high therefore we must fail to reject the HO and accept that there is not significant correlations
+between lot_area and logerror. Next I performed a pearson r test on logerror and area to check for linear correlation and check the strength of the correlation alpha set to .05 and my results were that there is no strong linear correlation between area and logerror.
+
+Results: Best predictors discovered were bedroom count, number of bedrooms, number of bathrooms, and square footage
+Best-peforming model outperformed baseline and increased $R^2$ value by 0.2%
+
+Conclusion and Next Steps: Some initial exploration and statistical testing revealed that some features that had better correlation with logerror were bedroom and bathroom and with more time, I would like to test these features in clustering.
+
 
 _________________________________________________________________________________________________________
 **Pipeline Stages Breakdown**
@@ -183,7 +193,7 @@ You will need your own env file with database credentials along with all the nec
  Read this README.md
  Download the aquire.py, prepare.py, and final_report.ipynb files into your working directory
  Add your own env file to your directory. (user, password, host)
- Run the telco_final_report.ipynb notebook.
+ Run the final_notebook.ipynb
  
 _________________________________________________________________________________________________________
 

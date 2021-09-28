@@ -16,7 +16,7 @@ def prep_all_function(df):
     df = drop_cols_null(df)
     df = prep_work2(df)
     # create a df with no outliers 
-    df_no_outs =outlier_function(df,df.columns, 1.5)
+    df_no_outs =outlier_function(df,df.columns, 3)
     return df_no_outs, df
 
 def prep_work1(df):
