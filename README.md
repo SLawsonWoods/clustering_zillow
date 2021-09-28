@@ -1,7 +1,5 @@
 # clustering_zillow 
 Sarah Lawson Woods September 2021
-
-
 _________________________________________________________________________________________________________
 **Table of Contents**
 
@@ -13,7 +11,7 @@ ________________________________________________________________________________
 
 
 6.)  Project Context
-7.)  Data Dictionary**
+7.)  Data Dictionary
 8.)  Initial Hypothesis**
 9.)  Executive Summary - Conclusions & Next Steps**
 
@@ -57,43 +55,72 @@ ________________________________________________________________________________
 The zillow dataset I am using comes from the Codeup database.
 
 _________________________________________________________________________________________________________
-**Data Dictionary
+**Data Dictionary**
 
-senior_citizen: Indicates if customer is a senior citizen                        (int)
-tenure: Months customer has subscribed to service                                (int)
-monthly_charges:  Dollar cost per month                                          (float)
-total_charges:  Dollar cost accumulated during tenure                            (float)
-internet_extras: Indicates if customer pays for internet add-ons                 (int)
-streaming_entertainmen: Indicates if customer has streaming movies or tv         (int)
-family:  Indicates if customer has dependents or partner                         (int)
-gender_Male: Indicates if customer identifies as male                            (int)
-phone_service_Yes: Indicates if customer has at least 1 phone line               (int)
-paperless_billing_Yes: Indicates if customer uses paperless billing              (int)
-churn_Yes: Indicates if customer has left the company                            (int)
-contract_type_Month-to-month: Indicates if customer pays on a monthly basis      (int)
-contract_type_One_year: Indicates if customer pays annually                      (int)
-contract_type_Two_year: Indicates if customer pays bi-annually                   (int)
-internet_service_type_DSL: Indicates if customer has DSL internet                (int)
-internet_service_type_Fiber_optic: Indicates if customer has fiber optic internet(int)
-internet_service_type_None: Indicates if customer does not have internet         (int)
-payment_type_Bank_transfer: Indicates if customer pays using a bank account      (int)
-payment_type_Credit_card: Indicates if customer pays using a credit card         (int)
-payment_type_Electronic_check: Indicates if customer pays using e-check          (int)
-payment_type_Mailed_check: Indicates if customer pays using paper check          (int)
+                                             Column Name	Description
 
+'airconditioningtypeid'                                Type of cooling system present in the home (if any)
+'architecturalstyletypeid'	                           Architectural style of the home (i.e. ranch, colonial, split-level, etc)
+'basementsqft'                                         Finished living area below or partially below ground level
+'bathroomcnt'                                          Number of bathrooms in home including fractional bathrooms
+'bedroomcnt'                                           Number of bedrooms in home
+'buildingqualitytypeid'                                Overall assessment of condition building from best/lowest- worst/highest
+'buildingclasstypeid'                                  The building framing type (steel frame, wood frame, concrete/brick)
+'calculatedbathnbr'                                    Number of bathrooms in home including fractional bathroom
+'decktypeid'                                           Type of deck (if any) present on parcel
+'threequarterbathnbr'                                  Number of 3/4 bathrooms in house (shower + sink + toilet)
+'finishedfloor1squarefeet'                             Size of the finished living area on the first (entry) floor of the home
+'calculatedfinishedsquarefeet'                         Calculated total finished living area of the home
+'finishedsquarefeet6'                                  Base unfinished and finished area
+'finishedsquarefeet12'                                 Finished living area
+'finishedsquarefeet13'                                 Perimeter living area
+'finishedsquarefeet15'                                 Total area
+'finishedsquarefeet50'                                 Size of the finished living area on the first (entry) floor of the home
+'fips'                                                 Federal Information Processing Standard code - see                                                                              https://en.wikipedia.org/wiki/FIPS_county_code for more details
+'fireplacecnt'                                         Number of fireplaces in a home (if any)
+'fireplaceflag'                                        Is a fireplace present in this home
+'fullbathcnt'                                          Number of full bathrooms (sink, shower + bathtub, and toilet) in home
+'garagecarcnt'                                         Total number of garages on the lot including an attached garage
+'garagetotalsqft'                                      Total number of square feet of all garages on lot
+'hashottuborspa'                                       Does the home have a hot tub or spa
+'heatingorsystemtypeid'                                Type of home heating system
+'latitude'                                             Latitude of the middle of the parcel multiplied by 10e6
+'longitude'                                            Longitude of the middle of the parcel multiplied by 10e6
+'lotsizesquarefeet'                                    Area of the lot in square feet
+'numberofstories'                                      Number of stories or levels the home has
+'parcelid'                                             Unique identifier for parcels (lots)
+'poolcnt'                                              Number of pools on the lot (if any)
+'poolsizesum'                                          Total square footage of all pools on property
+'pooltypeid10'                                         Spa or Hot Tub
+'pooltypeid2'                                          Pool with Spa/Hot Tub
+'pooltypeid7'                                          Pool without hot tub
+'propertycountylandusecode'                            County land use code i.e. it's zoning at the county level
+'propertylandusetypeid'                                Type of land use the property is zoned for
+'propertyzoningdesc'                                   Description of the allowed land uses (zoning) for that property
+'rawcensustractandblock'                               Census tract and block ID combined and blockgroup assignment by extension
+'censustractandblock'                                  Census tract and block ID combined - also contains blockgroup assignment                                                        by extension
+'regionidcounty'                                       County in which the property is located
+'regionidcity'                                         City in which the property is located (if any)
+'regionidzip'                                          Zip code in which the property is located
+'regionidneighborhood'                                 Neighborhood in which the property is located
+'roomcnt'                                              Total number of rooms in the principal residence
+'storytypeid'                                          Type of floors in a multi-story house (i.e. basement and main level,                                                            split-level, attic, etc.). See tab for details.
+'typeconstructiontypeid'                               What type of construction material was used to construct the home
+'unitcnt'                                              Number of units the structure is built into (i.e. 2 = duplex, 3 =                                                                triplex, etc...)
+'yardbuildingsqft17'                                   Patio in yard
+'yardbuildingsqft26'                                   Storage shed/building in yard
+'yearbuilt'                                            The Year the principal residence was built
+'taxvaluedollarcnt'                                    The total tax assessed value of the parcel
+'structuretaxvaluedollarcnt'                           The assessed value of the built structure on the parcel
+'landtaxvaluedollarcnt'                                The assessed value of the land area of the parcel
+'taxamount'                                            The total property tax assessed for that assessment year
+'assessmentyear'                                       The year of the property tax assessment
+'taxdelinquencyflag'                                   Property taxes for this parcel are past due as of 2015
+'taxdelinquencyyear'                                   Year for which the unpaid propert taxes were due
 _________________________________________________________________________________________________________
-**Initial Hypotheses
+**Initial Hypotheses**
 
-Hypothesis 1: Let's see if there is a relationship between payment type and churn.
-$H_0$: There is no relationship between payment type and churn, they are independent. 
-$H_a$: There is a relationship between payment type and churn, they are dependent on each other. 
-Outcome: I rejected the Null Hypothesis; there is a relationship between payment type and churn.
-
-Hypothesis 2: Let's see if there is a relationship between being a senior citizen and churn.
-alpha = .05
-$H_0$: There is no relationship between being a senior citizen or not and churn, they are independent. 
-$H_a$: There is a relationship between beinga a senior citizen or not and churn, they are dependent on each other.
-Outcome: I rejected the Null Hypothesis; there is a relationship between being a senior citizen and churn.
+My initial ideas are that area of the home and acreage that the home sitsp
 
 _________________________________________________________________________________________________________
 **Executive Summary - Conclusions & Next Steps**
@@ -112,7 +139,7 @@ Plan
 - Explore the dataset after preparation using visualizations, and clustering to identify potential 
   drivers of logerror.
 - Establish a baseline accuracy and document well.
-- Clearly define three hypotheses, set an alpha, run the statistical tests needed, reject or fail to       reject the Null Hypothesis, and document findings and takeaways.
+- Clearly define three hypotheses, set an alpha, run the statistical tests needed, reject or fail to reject the Null Hypothesis, and document findings and takeaways.
 - Train four different ML models incorporate drivers found while clustering as possible.
 - Evaluate models on train and validate datasets.
 - Choose the model with that performs the best and evaluate that single model on the test dataset.
