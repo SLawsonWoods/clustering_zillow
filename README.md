@@ -4,24 +4,24 @@ ________________________________________________________________________________
 **Table of Contents**
 
 1.)  Project Summary
-2.)  Project Objective
-3.)  Business Goals
-4.)  Audience
-5.)  Project Deliverables
+2.)  Project Objective & Goals
+3.)  Audience
+4.)  Project Deliverables
 
 
-6.)  Project Context
-7.)  Data Dictionary
-8.)  Initial Hypothesis
-9.)  Executive Summary - Conclusions & Next Steps**
+5.)  Project Context
+
+6.)  Data Dictionary
+7.)  Initial Hypothesis
+8.)  Executive Summary - Conclusions & Next Steps**
+9.)  Pipeline Stages Breakdown
 
 
-10.)  Pipeline Stages Breakdown
-10a.) Project Plan https://trello.com/b/FbVWBxd8/clustering-with-zillow
-10b.) Data Acquisition
-10c.) Data Preparation
-10d.) Data Exploration
-10e.) Modeling and Evaluation
+10.)  Project Plan https://trello.com/b/FbVWBxd8/clustering-with-zillow
+10a.) Data Acquisition
+10b.) Data Preparation
+10c.) Data Exploration
+10d.) Modeling and Evaluation
 
 11.)  Reproduce
 
@@ -30,13 +30,8 @@ ________________________________________________________________________________
 Zillow's Zestimate is an estimate of value of a home using a formula they created. Zestimates have an accuracy of about 80%.  What drives errors between the zestimates and the actual sale price of the home?In this project working with a Zillow dataset I explore features of a home that are drivers for logerror, and create models to predict logerror. I want to establish if using clustering to explore my data will help me find these drivers and increase my model performance. 
 
 _________________________________________________________________________________________________________
-**Project Objectives**
+**Project Objectives & Goals**
 Document code, process (data acquistion, preparation, exploratory data analysis including clusterng and statistical testing, modeling, and model evaluation), findings, and key takeaways in a Jupyter Notebook report. Create modules (acquire.py, prepare.py) that make your process repeateable. Construct 4 models to predict logerror using clustering techniqures if they prove to indicate useful features. Deliver a 4 minute presentation consisting of a high-level notebook walkthrough using your Jupyter Notebook from above; your presentation should be appropriate for your audience the Zillow data science team.  Set aside one minute at the end of the presentation to answer questions about your code, process, findings and key takeaways, and models.
-
-_________________________________________________________________________________________________________
-**Business Goals**
-Find drivers for logerror which is the difference between the actual sale price of a home and the zestimate. Answer the question, drives logerror? Construct 4 ML model that accurately predicts churn for each customer.
-Document the process well enough to be presented or read like a report.
 
 _________________________________________________________________________________________________________
 **Audience**
@@ -57,7 +52,7 @@ The zillow dataset I am using comes from the Codeup database.
 _________________________________________________________________________________________________________
 **Data Dictionary**
 
-                                             Column Name	Description
+    Column Name                                                              Description
 
 'airconditioningtypeid'                                Type of cooling system present in the home (if any)
 'architecturalstyletypeid'	                           Architectural style of the home (i.e. ranch, colonial, split-level, etc)
