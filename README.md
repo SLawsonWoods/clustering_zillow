@@ -17,7 +17,7 @@ ________________________________________________________________________________
 
 
 10.)  Pipeline Stages Breakdown
-10a.) Project Plan
+10a.) Project Plan https://trello.com/b/FbVWBxd8/clustering-with-zillow
 10b.) Data Acquisition
 10c.) Data Preparation
 10d.) Data Exploration
@@ -125,16 +125,13 @@ My initial ideas were that area of the home and acreage that the home sits on wo
 _________________________________________________________________________________________________________
 **Executive Summary - Conclusions & Next Steps**
 
-Goals: The purpose of this project is create a regression model with using Kmeans clusters (if proven valuable) to predicts the logerror of Zillow homes in three counties of California (Los Angeles County, Orange County, and Ventrua County).
+Goals: The purpose of this project is create a regression model with using Kmeans clusters (if proven valuable) to predicts the drivers of logerror of Zillow homes in three counties of California (Los Angeles County, Orange County, and Ventrua County).
 
 Target: logerror which is the difference in the predicted zestimate and the actual home sale price
 
-Findings: I created clusters with a focus on lot_size and area of the home, according to my first cluster the r-value is .0015
-and the p-value is very high therefore we must fail to reject the HO and accept that there is not significant correlations
-between lot_area and logerror. Next I performed a pearson r test on logerror and area to check for linear correlation and check the strength of the correlation alpha set to .05 and my results were that there is no strong linear correlation between area and logerror.
+Findings: The three clusters I created were not insightful enough to use in modeling.  My four models all performed poorly and were beaten by the baseline.  My best model was the 3rd degree polynomial and was beaten by the baseline model by a small amount.
 
-Results: Best predictors discovered were bedroom count, number of bedrooms, number of bathrooms, and square footage
-Best-peforming model outperformed baseline and increased $R^2$ value by 0.2%
+Results: Best predictors discovered were bedroom count, number of bedrooms and I found no significant clusters to use as features in modeling
 
 Conclusion and Next Steps: Some initial exploration and statistical testing revealed that some features that had better correlation with logerror were bedroom and bathroom and with more time, I would like to test these features in clustering.
 
@@ -156,9 +153,7 @@ Plan
 - Document conclusions, takeaways, and next steps in the Final Report Notebook.
  
 Plan -> Acquire
-Store functions that are needed to acquire data from the customers, contract_type, internet_service_types and payment_types tables from the telco database on the Codeup data science database server; make sure the acquire.py module contains the necessary imports to run my code.
-The final function will return a pandas DataFrame.
-Import the acquire function from the acquire.py module and use it to acquire the data in the Final Report Notebook.
+Store functions that are needed to acquire data selecting single family units, with transaction dates in the specified months and year, from the Zillow database on the Codeup data science database server; make sure the acquire.py module contains the necessary imports to run my code. The final function will return a pandas DataFrame. Import the acquire function from the acquire.py module and use it to acquire the data in the Final Report Notebook.
 Plot distributions of individual variables.
 
 Plan -> Acquire -> Prepare
